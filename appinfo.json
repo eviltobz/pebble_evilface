@@ -1,0 +1,45 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "veryveryevilco",
+    "longName": "evilface",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/FontBitmap_108_6_cropped&ordered.png",
+                "name": "NUMERALS_temp2",
+                "type": "png-trans"
+            },
+            {
+                "file": "images/FontBitmap_109_2_cropped&ordered.png",
+                "name": "NUMERALS",
+                "type": "png-trans"
+            },
+            {
+                "compatibility": "2.7",
+                "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                "name": "FONT_18",
+                "type": "font"
+            },
+            {
+                "characterRegex": "[0-9]",
+                "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                "name": "FONT_28",
+                "type": "font"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "evilface",
+    "targetPlatforms": [
+        "basalt"
+    ],
+    "uuid": "1dfee1f8-867d-4dc3-b3db-337924dfdf34",
+    "versionLabel": "0.1",
+    "watchapp": {
+        "watchface": true
+    }
+}
