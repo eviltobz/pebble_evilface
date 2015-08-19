@@ -1,5 +1,9 @@
 {
-    "appKeys": {},
+    "appKeys": {
+        "KEY_WEATHER_CURRENT": 3,
+        "KEY_WEATHER_EVENING": 2,
+        "KEY_WEATHER_MORNING": 1
+    },
     "capabilities": [
         ""
     ],
@@ -9,25 +13,46 @@
     "resources": {
         "media": [
             {
-                "file": "images/FontBitmap_108_6_cropped&ordered.png",
-                "name": "NUMERALS_temp2",
-                "type": "png-trans"
+                "file": "fonts/meteocons.ttf",
+                "name": "WEATHER_FONT_23",
+                "type": "font"
             },
             {
-                "file": "images/FontBitmap_109_2_cropped&ordered.png",
-                "name": "NUMERALS",
-                "type": "png-trans"
+                "file": "images/wind_t.PNG",
+                "name": "WIND_DIRECTION_ICONS",
+                "type": "png"
             },
             {
-                "compatibility": "2.7",
                 "file": "fonts/DIN 1451 Std Engschrift.ttf",
-                "name": "FONT_18",
+                "name": "FONT_40",
+                "type": "font"
+            },
+            {
+                "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                "name": "FONT_10",
+                "type": "font"
+            },
+            {
+                "characterRegex": "[0-9]",
+                "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                "name": "FONT_85",
                 "type": "font"
             },
             {
                 "characterRegex": "[0-9]",
                 "file": "fonts/DIN 1451 Std Engschrift.ttf",
                 "name": "FONT_28",
+                "type": "font"
+            },
+            {
+                "compatibility": "2.7",
+                "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                "name": "FONT_17",
+                "type": "font"
+            },
+            {
+                "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                "name": "FONT_20",
                 "type": "font"
             }
         ]
@@ -37,7 +62,7 @@
     "targetPlatforms": [
         "basalt"
     ],
-    "uuid": "1dfee1f8-867d-4dc3-b3db-337924dfdf34",
+    "uuid": "393549bb-9a11-466c-a521-5688bafeb9e5",
     "versionLabel": "0.1",
     "watchapp": {
         "watchface": true

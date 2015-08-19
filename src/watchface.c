@@ -2,13 +2,15 @@
 #include "watchface.h"
 #include "timedisplay.h"
 #include "weatherdisplay.h"
-#include "datedisplay.h"
 #include "statusdisplay.h"
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
+static GFont s_res_gothic_18_bold;
 static BitmapLayer *s_debug_grid_v_half;
 static BitmapLayer *s_debug_grid_h_half;
+static Layer *s_layer_1;
+static TextLayer *s_textlayer_1;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -17,6 +19,7 @@ static void initialise_ui(void) {
     window_set_fullscreen(s_window, true);
   #endif
   
+  s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   // s_debug_grid_v_half
   s_debug_grid_v_half = bitmap_layer_create(GRect(71, 0, 2, 167));
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_debug_grid_v_half);
@@ -24,17 +27,29 @@ static void initialise_ui(void) {
   // s_debug_grid_h_half
   s_debug_grid_h_half = bitmap_layer_create(GRect(0, 83, 143, 2));
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_debug_grid_h_half);
+  
+  // s_layer_1
+  s_layer_1 = layer_create(GRect(21, 19, 40, 40));
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_layer_1);
+  
+  // s_textlayer_1
+  s_textlayer_1 = text_layer_create(GRect(20, 20, 100, 84));
+  text_layer_set_text(s_textlayer_1, "Text layer");
+  text_layer_set_font(s_textlayer_1, s_res_gothic_18_bold);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
 }
 
 static void destroy_ui(void) {
   window_destroy(s_window);
   bitmap_layer_destroy(s_debug_grid_v_half);
   bitmap_layer_destroy(s_debug_grid_h_half);
+  layer_destroy(s_layer_1);
+  text_layer_destroy(s_textlayer_1);
 }
 // END AUTO-GENERATED UI CODE
 
 
-
+/*
 void update_time(struct tm *tick_time){
   
   static char date_buffer1[] = "XXX, XX/XX/XXXX";
@@ -106,3 +121,5 @@ void show_watchface(void) {
 void hide_watchface(void) {
   window_stack_remove(s_window, true);
 }
+
+*/

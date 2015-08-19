@@ -1,64 +1,72 @@
 #include <pebble.h>
 #include "timedisplay.h"
+#include "common.h"
+#include "debugout.h"
 
-static GBitmap *clock_numbers[10];
-static BitmapLayer *display_layer[4];
-static Window *parent_window;
+  // dirty haxx
+#include "weatherdisplay.h"
+  
+  
+static GFont s_time_font;
+static GFont s_date_font;
+static TextLayer *s_hours;
+static TextLayer *s_mins;
+static TextLayer *s_date;
+static BitmapLayer *s_date_background;
 
-static const int TOP = 4, BOTTOM = 85, LEFT = 0, RIGHT = 35, DISPLAY_OFFSET = 74;
-static const int WIDTH = 32, HEIGHT = 78;
-static const int IMAGE_X_OFFSET = 1, IMAGE_X_REPEAT = 36, IMAGE_Y_OFFSET = 1;
 
-static void init_character(int character) {
-  clock_numbers[character] = gbitmap_create_with_resource(RESOURCE_ID_NUMERALS_temp2_BLACK);
-  GRect rect = gbitmap_get_bounds(clock_numbers[character]);
-  rect.size.w=WIDTH;
-  rect.size.h=HEIGHT;
-  rect.origin.x = IMAGE_X_OFFSET + 1 + (character * IMAGE_X_REPEAT);
-  rect.origin.y = IMAGE_Y_OFFSET;
-  gbitmap_set_bounds(clock_numbers[character], rect);
+static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+  static char hours[3], mins[3];
+  strftime(hours, 3, "%I", tick_time);
+  strftime(mins, 3, "%M", tick_time);
+  
+  text_layer_set_text(s_hours, hours);
+  text_layer_set_text(s_mins, mins);
+  
+  static char date[12];
+  strftime(date, sizeof(date), "%a%d%b", tick_time);
+  text_layer_set_text(s_date, date);
+  
+  // This says we should pull out the tick handler as a separate thing to 
+  // do updates to time & date & weather & whatever else...
+  // infact, mebe just a single event handler point that spins out to the
+  // different areas? so then the weather display could just take relevant
+  // weather info struct as an arg
+  weatherdisplay_update(tick_time);
+  // especially as this can start trying to draw to the screen, in elements
+  // which may not yet have been created!
 }
 
-static BitmapLayer* init_display(int x, int y){
-  BitmapLayer *display = bitmap_layer_create(GRect(x + DISPLAY_OFFSET, y, WIDTH, HEIGHT));
-  bitmap_layer_set_compositing_mode(display,  GCompOpSet);
-  layer_add_child(window_get_root_layer(parent_window), (Layer *)display);
-  return display;
+static void SECONDHACK_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+  tick_handler(tick_time, units_changed);
+  //HACK_draw_next_weather();
+  char line[50];
+  static int count = 1;
+  FORMAT_STRING(line, "%d - Hacky log info to test", count++);
+  debugout_logline(line);
 }
 
 void timedisplay_create(Window *window){
-  for(int i = 0; i < 10; i++)
-    init_character(i);
+  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_85));
+  s_date_font = fonts_get_system_font(FONT_KEY_GOTHIC_14);
   
-  parent_window = window;
-  display_layer[0] = init_display(LEFT, TOP);
-  display_layer[1] = init_display(RIGHT, TOP);
-  display_layer[2] = init_display(LEFT, BOTTOM);
-  display_layer[3] = init_display(RIGHT, BOTTOM);
+  //s_date_background = build_bitmaplayer(GRect(79, 133, 62, 18), GColorWhite);
+  //s_date  = build_textlayer(GRect(76,132,68,21), s_date_font, GColorBlack, GTextAlignmentCenter);
+  s_date_background = build_bitmaplayer(GRect(85, 133, 56, 18), GColorWhite);
+  s_date  = build_textlayer(GRect(82,132,62,21), s_date_font, GColorBlack, GTextAlignmentCenter);
   
+  s_hours = build_default_textlayer(GRect(74, -22, 74, 93), s_time_font);
+  s_mins  = build_default_textlayer(GRect(74, 43, 74, 93), s_time_font);
   
-  // hacky, design-time, alignment aid.
-  /*
-  bitmap_layer_set_background_color(display_layer[0], GColorRed);
-  bitmap_layer_set_background_color(display_layer[1], GColorBlue);
-  bitmap_layer_set_background_color(display_layer[2], GColorGreen);
-  bitmap_layer_set_background_color(display_layer[3], GColorRed);
-  */
+  tick_handler(get_current_time(), MINUTE_UNIT);
+  tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+  //tick_timer_service_subscribe(SECOND_UNIT, SECONDHACK_tick_handler);
 }
 
 void timedisplay_delete(void){
-  for(int i = 0; i < 10; i++)
-    gbitmap_destroy(clock_numbers[i]);
-  
-  for(int i = 0; i < 4; i++)
-    bitmap_layer_destroy(display_layer[i]);
-}
-
-void draw_character(int character, BitmapLayer *destination){
-  bitmap_layer_set_bitmap(destination, clock_numbers[character-48]);
-}
-
-void timedisplay_update(char *time_string) {
-  for(int i = 0; i < 4; i++)
-    draw_character(time_string[i], display_layer[i]);
+  bitmap_layer_destroy(s_date_background);
+  text_layer_destroy(s_hours);
+  text_layer_destroy(s_mins);
+  text_layer_destroy(s_date);
+  fonts_unload_custom_font(s_time_font);
 }
