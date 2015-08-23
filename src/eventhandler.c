@@ -20,6 +20,17 @@ bool should_show_debug() {
 }
 
 static void tap_handler(AccelAxisType axis, int32_t direction) {
+  static int x1, x2, y1, y2, z1, z2;
+  if(axis == ACCEL_AXIS_X && direction < 0) x1++;
+  if(axis == ACCEL_AXIS_X && direction > 0) x2++;
+  if(axis == ACCEL_AXIS_Y && direction < 0) y1++;
+  if(axis == ACCEL_AXIS_Y && direction > 0) y2++;
+  if(axis == ACCEL_AXIS_Z && direction < 0) z1++;
+  if(axis == ACCEL_AXIS_Z && direction > 0) z2++;
+  char tap[50];
+  FORMAT_STRING(tap, "TAP X%d/%d, Y%d/%d, Z%d/%d", x1, x2, y1, y2, z1, z2);
+  debugout_logline(tap);
+
   if(should_show_debug()) {
     debugout_visible(true);
   } else {

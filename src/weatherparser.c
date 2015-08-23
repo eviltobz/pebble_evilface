@@ -55,11 +55,11 @@ int ReadInt(void) {
 void parse_timestamp(WeatherData *weather) {
     int hour = weather->timestamp;
   
-    if(timestamp < 12)
+    if(hour < 12)
       strcpy(weather->timestamp_period, "am");
     else
       strcpy(weather->timestamp_period, "pm");
-    if(timestamp > 12)
+    if(hour > 12)
       hour -= 12;
     FORMAT_STRING(weather->timestamp_hour, "%d", hour);
     
@@ -77,7 +77,6 @@ void parse_weather(WeatherData *weather, char *weather_string) {
     weather->description = ReadString();
     weather->description_id = ReadInt();
     //int hour = ReadInt();
-    weather->timestamp = ReadInt;
     /*
     if(weather->timestamp < 12)
       strcpy(weather->timestamp_period, "am");
@@ -87,6 +86,7 @@ void parse_weather(WeatherData *weather, char *weather_string) {
       hour -= 12;
     FORMAT_STRING(weather->timestamp_hour, "%d", hour);
     */
+    weather->timestamp = ReadInt();
     parse_timestamp(weather);
     
     strcpy(weather->location_buffer, ReadString());
