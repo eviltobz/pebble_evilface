@@ -115,15 +115,15 @@ void weatherlayer_clear(WeatherLayer *layer) {
 
 void weatherlayer_update(WeatherLayer *layer, WeatherData *weather) {
   // temporarily not showing this...
-  FORMAT_STRING(layer->HACK_BUFFER, "%s %s", weather->timestamp_hour, weather->timestamp_period);
-  text_layer_set_text(layer->location, layer->HACK_BUFFER);
+  //FORMAT_STRING(layer->HACK_BUFFER, "%s %s", weather->timestamp_hour, weather->timestamp_period);
+  //text_layer_set_text(layer->location, layer->HACK_BUFFER);
+  text_layer_set_text(layer->location, weather->location_buffer);
   
-  //text_layer_set_text(layer->location, weather->location_buffer);
   draw_wind(layer, weather->wind_direction_pointer);
   text_layer_set_text(layer->windspeed, weather->wind_speed); 
   text_layer_set_text(layer->windgust, weather->wind_gust);
-  //text_layer_set_text(layer->hour, weather->timestamp_hour);
-  //text_layer_set_text(layer->period, weather->timestamp_period);
+  text_layer_set_text(layer->hour, weather->timestamp_hour);
+  text_layer_set_text(layer->period, weather->timestamp_period);
   
   FORMAT_STRING(layer->TEMP_AND_RAIN_BUFFER, "%s° %s", weather->feels_like, weather->precipitation_prob);
   text_layer_set_text(layer->temp_and_rain, layer->TEMP_AND_RAIN_BUFFER);
@@ -173,15 +173,8 @@ WeatherLayer* weatherlayer_create(Window *window, int y_offset) {
   
   WeatherLayer *layer = (WeatherLayer *) malloc(sizeof(WeatherLayer));
   layer->windicons = gbitmap_create_with_resource(RESOURCE_ID_WIND_DIRECTION_ICONS);
-  //static bool doublehack = true;
-  // ?? vividviolet
-  //if(doublehack)
-    layer->location = build_textlayer(GRect(1, -5 + y_offset, 80, 70), s_location_font, GColorBlueMoon, GTextAlignmentLeft);
-  /*
-  else
-    layer->location = build_textlayer(GRect(1, -5 + y_offset, 80, 70), s_location_font, GColorVividCerulean, GTextAlignmentLeft);
-  doublehack = false;
-    */
+  //layer->location = build_textlayer(GRect(1, -5 + y_offset, 80, 70), s_location_font, GColorBlueMoon, GTextAlignmentLeft);
+  layer->location = build_textlayer(GRect(1, 10 + y_offset, 80, 70), s_location_font, GColorBlueMoon, GTextAlignmentLeft);
     
   create_wind_info(&layer, 0, 0 + y_offset);
   create_weather_info(&layer, 0, 40 + y_offset);

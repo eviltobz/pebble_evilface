@@ -9,7 +9,9 @@ function getWeather(jsonRoot, hour) {
   // only has one date!!!
   const OFFSET = 90;
   var time = hour * 60;
+  
   log("Looking for timeperiod to match:" + time  + " (" + hour + ":00) on date:" + json.value + " with " + json.Rep.length + " Rep sections.");
+  var location = jsonRoot.SiteRep.DV.Location.name;
   
   var block = json.Rep[0];
   for(var i = 0; i < json.Rep.length; i++) {
@@ -19,7 +21,7 @@ function getWeather(jsonRoot, hour) {
     }
     
     block = json.Rep[i];
-    return extractWeatherData(block);
+    return extractWeatherData(block, location);
   }
   log("NO TIME MATCH FOUND!!!");
   return "";
@@ -57,31 +59,43 @@ function getCurrentWeather(json){
 function formatWeatherType(typeCode){
   return WEATHER_TYPES[typeCode];
 }
+/*
 function formatTimestamp(repCode) {
   var hour = repCode / 60;
   var period = hour < 12 ? "am" : "pm";
   return (hour <= 12 ? hour : (hour-12)) + '\n' + period;
 }
+*/
 function formatWindDirection(name) {
   return WIND_DIRECTIONS[name];
 }
+function formatLocationName(locationName) {
+  var location = "GPS";
+  if(locationName == 'BRIGHTON')
+    location = "Work";
+  if(locationName == 'SHOREHAM-BY-SEA')
+    location = "Home";
+  return location;
+}
 
-function extractWeatherData(block){
+function extractWeatherData(block, locationName){
   var windPointer = formatWindDirection(block.D);
   var typeName = formatWeatherType(block.W);
-  var timestamp = formatTimestamp(block.$);
+  //var timestamp = formatTimestamp(block.$);
+  var timestamp = block.$ / 60;
+  var location = formatLocationName(locationName);
   
   var weatherString = '' + block.F + '\n' + 
     block.S + '\n' + block.G + '\n' +  block.D + '\n' +  windPointer + '\n' +
     block.Pp + "%" + '\n' +
     typeName + '\n' + block.W + '\n' +
-    timestamp + '\n';
+    timestamp + '\n' + location + '\n';
   
   log('Weather details \n Temp:' + block.F +
       ', Wind Speed/Gust/Direction/Pointer:' + block.S + '/' + block.G + '/' + block.D + '/' + windPointer +
       ', Precipitation:' + block.Pp + "%" + 
       ', WeatherType:' + typeName + "/" + block.W +
-      ', Timestamp:' + timestamp);
+      ', Timestamp:' + timestamp + ', Location:' + location);
   return weatherString;
 }
 
@@ -122,6 +136,7 @@ const SHOREHAM = '353507';
 
 function getFullWeatherData() {
   getMetData(BRIGHTON);
+  //log('not doing any javascript');
 }
 
 // Listen for when the watchface is opened
@@ -159,13 +174,42 @@ function log(message) {
   console.log(formattedDate + message);
 }
 
+function sendError(message) {
+  // Assemble dictionary using our keys
+  var dictionary = {
+    'KEY_WEATHER_ERROR': message
+  };
+
+  // Send to Pebble
+  Pebble.sendAppMessage(dictionary,
+    function(e) {
+      log('Error info sent to Pebble successfully!');
+    },
+    function(e) {
+      log('Error sending error info to Pebble!');
+    }
+  );
+  
+}
+
 //var xhrRequest = function (url, type, callback) {
 function xhrRequest (url, type, callback) {
   log('Calling webservice at ' + url);
   var xhr = new XMLHttpRequest();
+  log('TIMEOUT VALUE IS ' + xhr.timeout);
   xhr.onload = function () {
     callback(this.responseText);
   };
+  xhr.onerror = function () {
+    log('XHR ERROR');
+    log(xhr.status);
+    sendError("XHR error: " + xhr.status);
+  };
+  xhr.ontimeout = function () {
+    log('XHR TIMEOUT');
+    log(xhr.timeout);
+    sendError("XHR timeout");
+  }
   xhr.open(type, url);
   xhr.send();
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include <pebble.h>
 
 void weatherdisplay_create(Window *window);
 void weatherdisplay_delete(void);

@@ -2,6 +2,7 @@
 #include <string.h>
 #include "weatherparser.h"
 #include "common.h"
+#include "debugout.h"
   
   
 void print_weather(WeatherData *weather) {
@@ -50,7 +51,21 @@ int ReadInt(void) {
   int_string = ReadString();
   return atoi(int_string);
 }
+
+void parse_timestamp(WeatherData *weather) {
+    int hour = weather->timestamp;
   
+    if(timestamp < 12)
+      strcpy(weather->timestamp_period, "am");
+    else
+      strcpy(weather->timestamp_period, "pm");
+    if(timestamp > 12)
+      hour -= 12;
+    FORMAT_STRING(weather->timestamp_hour, "%d", hour);
+    
+    
+}
+
 void parse_weather(WeatherData *weather, char *weather_string) {
   if(Reset(weather, weather_string)) {
     weather->feels_like = ReadString();
@@ -61,8 +76,19 @@ void parse_weather(WeatherData *weather, char *weather_string) {
     weather->precipitation_prob = ReadString();
     weather->description = ReadString();
     weather->description_id = ReadInt();
-    weather->timestamp_hour = ReadString();
-    weather->timestamp_period = ReadString();
-    strcpy(weather->location_buffer, "B");
+    //int hour = ReadInt();
+    weather->timestamp = ReadInt;
+    /*
+    if(weather->timestamp < 12)
+      strcpy(weather->timestamp_period, "am");
+    else
+      strcpy(weather->timestamp_period, "pm");
+    if(weather->timestamp > 12)
+      hour -= 12;
+    FORMAT_STRING(weather->timestamp_hour, "%d", hour);
+    */
+    parse_timestamp(weather);
+    
+    strcpy(weather->location_buffer, ReadString());
   };
 }

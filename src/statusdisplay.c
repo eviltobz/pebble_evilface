@@ -80,8 +80,8 @@ void statusdisplay_create(Window *window) {
   bool connected = bluetooth_connection_service_peek();
   statusdisplay_update_connection(connected);
   
-  battery_state_service_subscribe(statusdisplay_update_battery);
-  bluetooth_connection_service_subscribe(statusdisplay_update_connection);
+  //battery_state_service_subscribe(statusdisplay_update_battery);
+  //bluetooth_connection_service_subscribe(statusdisplay_update_connection);
   
   // vibes can be annoying if you're on the cusp of bluetooth range.
   // mebe fire a timer when status changes, and only vibe after a minute if 

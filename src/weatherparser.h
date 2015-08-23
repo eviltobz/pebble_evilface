@@ -1,4 +1,5 @@
 #pragma once
+#include <pebble.h>
 
 typedef struct weather
 {
@@ -18,8 +19,11 @@ typedef struct weather
   char *wind_direction_name;
   int wind_direction_pointer;
   
-  char *timestamp_hour;
-  char *timestamp_period;
+  int timestamp;
+  //char *timestamp_hour;
+  //char *timestamp_period;
+  char timestamp_hour[3];
+  char timestamp_period[3];
   
   bool is_valid;
 } WeatherData;

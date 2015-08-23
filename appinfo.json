@@ -1,6 +1,7 @@
 {
     "appKeys": {
         "KEY_WEATHER_CURRENT": 3,
+        "KEY_WEATHER_ERROR": 99,
         "KEY_WEATHER_EVENING": 2,
         "KEY_WEATHER_MORNING": 1
     },

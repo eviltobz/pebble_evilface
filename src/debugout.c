@@ -1,7 +1,6 @@
 #include <pebble.h>
 #include "debugout.h"
 #include "common.h"
-#include "error.h"
 
 static TextLayer *s_debug_out;
 static GFont s_simple_font;
@@ -99,6 +98,11 @@ void debug_append_line(char *message){
     s_font_colour = GColorBlack;
   }
   
+  // have buffers for the last few messages, not counting timestamps
+  // if they're the same, show first, ..., last
+  // keep moving last as it posts - stop having the same message loooooadsa times
+  // moving to an explicit multiline buffer should help with this a bit anyways.
+  
   debug_append_internal(line);
 };
 void debug_append(char *message) {
@@ -108,6 +112,7 @@ void debug_append(char *message) {
     debug_append_internal(message);
 }
 void debug_log_err(char *message, char *reason) {
+  s_REQ_IN_PROCESS = false;
   char err_line[100];
   FORMAT_STRING(err_line, "%s\n%s", message, reason);
   debug_append_line(err_line);
@@ -120,19 +125,16 @@ void log_requested() {
   s_REQ_IN_PROCESS = true;
 }
 void log_received(char *received) {
-  s_REQ_IN_PROCESS = false;
   debug_append(received);
-  s_last_log_was_resp = true;
+  
+  // don't want to be binning last line if some error has also slipped in.
+  if(s_REQ_IN_PROCESS)
+   s_last_log_was_resp = true;
+  
+  s_REQ_IN_PROCESS = false;
+  
+  // do something to reset the colour - red should now be black
 }
-/*
-void  log_inbox_dropped(char *reason) {
-  debug_log_err("IN!", reason);
-}
-void log_outbox_failed(char *reason) {
-  debug_log_err("OUT!", reason);
-}
-*/
-
 
 
 
@@ -150,15 +152,22 @@ void debugout_append(char *message) {
   debug_append(message);
 }
 
+void debugout_visible(bool visible) {
+  layer_set_hidden((Layer*)s_debug_out, !visible);
+}
+
+/*
 static void toggle_display(void) {
   static bool visible = true;
-  layer_set_hidden((Layer*)s_debug_out, visible);
+  //layer_set_hidden((Layer*)s_debug_out, visible);
+  debugout_visible(visible);
   visible = !visible;
 }
 
 static void tap_handler(AccelAxisType axis, int32_t direction) {
   toggle_display();
 }
+*/
 
 
 void debugout_create(void) {
@@ -167,16 +176,17 @@ void debugout_create(void) {
   s_debug_out = build_textlayer(GRect(2,2, 140, 164), s_simple_font, GColorBlack, GTextAlignmentLeft);
   s_font_colour = GColorBlack;
   text_layer_set_background_color(s_debug_out, GColorWhite);
-  toggle_display();
+  //toggle_display();
+  debugout_visible(false);
   
-  accel_tap_service_subscribe(tap_handler);
+  //accel_tap_service_subscribe(tap_handler);
   s_initialised = true;
   update_display_text();
 }
 void debugout_delete(void) {
   s_initialised = false;
   
-  accel_tap_service_unsubscribe();
+  //accel_tap_service_unsubscribe();
   fonts_unload_custom_font(s_simple_font);
   
   text_layer_destroy(s_debug_out);

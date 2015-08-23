@@ -15,5 +15,7 @@ void debugout_logerrcode(char *message, AppMessageResult reason);
 void debugout_logline(char *message);
 void debugout_append(char *message);
 
+void debugout_visible(bool visible);
+
 void debugout_create(void);
 void debugout_delete(void);
