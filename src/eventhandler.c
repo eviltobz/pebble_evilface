@@ -7,7 +7,10 @@
 #include "timedisplay.h"
 #include "weatherdisplay.h"
   
-bool should_show_debug() {
+bool should_show_debug(AccelAxisType axis) {
+  if(axis == ACCEL_AXIS_X) // Add Z axis too?
+    return false;
+
   static time_t previous = 0;
   time_t current = time(NULL);
   time_t diff = current - previous;
@@ -19,7 +22,7 @@ bool should_show_debug() {
   return false;
 }
 
-static void tap_handler(AccelAxisType axis, int32_t direction) {
+static void log_axis(AccelAxisType axis, int32_t direction) {
   static int x1, x2, y1, y2, z1, z2;
   if(axis == ACCEL_AXIS_X && direction < 0) x1++;
   if(axis == ACCEL_AXIS_X && direction > 0) x2++;
@@ -29,9 +32,13 @@ static void tap_handler(AccelAxisType axis, int32_t direction) {
   if(axis == ACCEL_AXIS_Z && direction > 0) z2++;
   char tap[50];
   FORMAT_STRING(tap, "TAP X%d/%d, Y%d/%d, Z%d/%d", x1, x2, y1, y2, z1, z2);
-  debugout_logline(tap);
+  debugout_log(tap);
+}
 
-  if(should_show_debug()) {
+static void tap_handler(AccelAxisType axis, int32_t direction) {
+  //log_axis(axis, direction);
+
+  if(should_show_debug(axis)) {
     debugout_visible(true);
   } else {
     debugout_visible(false);
@@ -58,7 +65,7 @@ static void SECONDHACK_tick_handler(struct tm *tick_time, TimeUnits units_change
   char line[50];
   static int count = 1;
   FORMAT_STRING(line, "%d - Hacky log info to test", count++);
-  debugout_logline(line);
+  debugout_log(line);
 }
 
 
@@ -70,7 +77,7 @@ void eventhandler_subscribe() {
   bluetooth_connection_service_subscribe(statusdisplay_update_connection);
   
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
-  //tick_timer_service_subscribe(SECOND_UNIT, SECONDHACK_tick_handler);
+//  tick_timer_service_subscribe(SECOND_UNIT, SECONDHACK_tick_handler);
   
   
   // Not currently dealing with events raised from communication with phone. 

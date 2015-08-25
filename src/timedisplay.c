@@ -58,7 +58,7 @@ static void SECONDHACK_tick_handler(struct tm *tick_time, TimeUnits units_change
   char line[50];
   static int count = 1;
   FORMAT_STRING(line, "%d - Hacky log info to test", count++);
-  debugout_logline(line);
+  debugout_log(line);
 }
 
 

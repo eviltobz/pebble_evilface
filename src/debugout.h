@@ -12,7 +12,8 @@ void log_received(char *received);
 // good methods go down here VVV
 void debugout_logerr(char *message, char *reason);
 void debugout_logerrcode(char *message, AppMessageResult reason);
-void debugout_logline(char *message);
+void debugout_log(char *message);
+//void debugout_logline(char *message);
 void debugout_append(char *message);
 
 void debugout_visible(bool visible);

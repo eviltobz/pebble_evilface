@@ -10,6 +10,115 @@ static bool s_last_log_was_resp = false;
 static GColor s_font_colour;
 static bool s_initialised = false;
 
+#define MAXLINES 16
+static char s_prefixes[MAXLINES][6]; // hh:mm and that's it.
+static char s_lines[MAXLINES][50];
+static int s_count = 0;
+static int s_first = 0;
+static int s_last = MAXLINES;
+
+static int Next(int i) {
+  i++;
+  if(i >= MAXLINES) i = 0;
+  return i;
+}
+
+static int Previous(int i) {
+  i--;
+  if(i < 0) i = MAXLINES - 1;
+  return i;
+}
+
+static void Render() {
+  static char s_buffer[1024];
+  s_buffer[0] = '\0';
+  int i = s_first;
+  int x = 0;
+  
+  do {
+    x++;
+    strcat(s_buffer, s_prefixes[i]);
+    strcat(s_buffer, "-");
+    strcat(s_buffer, s_lines[i]);
+    strcat(s_buffer, "\n");
+    i = Next(i);
+  } while (x<s_count && i != s_first);
+  int l ;
+  l = strlen(s_buffer);
+  if(l > 0) s_buffer[l - 1] = '\0';
+  text_layer_set_text(s_debug_out, s_buffer);
+}
+
+static void AddLine(char *prefix, char *body) {
+  if(s_count < MAXLINES) s_count++;
+  int i = Next(s_last);
+  if(i == s_first)
+    s_first = Next(s_first);
+  strcpy(s_prefixes[i], prefix);
+  strcpy(s_lines[i], body);
+  //FORMAT_STRING(s_lines[i], "%s-%d", body, i);
+  s_last = i; // just set last at the start & use that?
+
+  Render();
+}
+
+void debugout_log(char *message) {
+  AddLine(timestamp_minutes(), message);
+}
+
+void debugout_append(char *message) {
+  strcat(s_lines[s_last], message);
+  Render();
+}
+
+void debugout_append_line(char *message) {
+  AddLine("", message);
+}
+
+
+
+
+
+
+
+void debug_log_err(char *message, char *reason) {
+  //s_REQ_IN_PROCESS = false;
+  char err_line[100];
+  FORMAT_STRING(err_line, "%s\n%s", message, reason);
+  debugout_append_line(err_line);
+}
+
+
+void debugout_logerr(char *message, char *reason) {
+  debug_log_err(message, reason);
+}
+void debugout_logerrcode(char *message, AppMessageResult reason) {
+  debug_log_err(message, translate_error(reason));
+}
+
+
+void log_requested() {
+  //if(s_last_log_was_resp)
+    //delete_last_line();
+  
+  debugout_append_line("Req.");
+  //s_REQ_IN_PROCESS = true;
+}
+void log_received(char *received) {
+  debugout_append(received);
+  
+  // don't want to be binning last line if some error has also slipped in.
+  //if(s_REQ_IN_PROCESS)
+   //s_last_log_was_resp = true;
+  
+  //s_REQ_IN_PROCESS = false;
+  
+  // do something to reset the colour - red should now be black
+}
+
+
+/*
+
 static int find_index_of(char *str, char character) {
   //LOGF_DEBUG("find_index_of in %d chars", strlen(str));
   u_int p = 0;
@@ -151,6 +260,7 @@ void debugout_logline(char *message) {
 void debugout_append(char *message) {
   debug_append(message);
 }
+*/
 
 void debugout_visible(bool visible) {
   layer_set_hidden((Layer*)s_debug_out, !visible);
@@ -177,11 +287,12 @@ void debugout_create(void) {
   s_font_colour = GColorBlack;
   text_layer_set_background_color(s_debug_out, GColorWhite);
   //toggle_display();
-  debugout_visible(false);
+  //debugout_visible(false);
+  debugout_append_line("Initialised");
   
   //accel_tap_service_subscribe(tap_handler);
   s_initialised = true;
-  update_display_text();
+  //update_display_text();
 }
 void debugout_delete(void) {
   s_initialised = false;

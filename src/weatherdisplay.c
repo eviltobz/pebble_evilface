@@ -53,7 +53,7 @@ static bool update_due(struct tm *tick_time) {
   }
   
   if(s_attempt_number == RETRY_LIMIT) {
-    debugout_logline("Aborting request retries");
+    debugout_log("Aborting request retries");
   }
   
   return false;
