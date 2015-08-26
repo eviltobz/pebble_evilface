@@ -34,9 +34,10 @@ static void Render() {
   s_buffer[0] = '\0';
   int i = s_first;
   int x = 0;
-  
+  LOGF_DEBUG("RENDER - i=%d, x=%d", i, x);
   do {
     x++;
+    LOGF_DEBUG("---- %d prefix=%s, line=%s", x, s_prefixes[i], s_lines[i]);
     strcat(s_buffer, s_prefixes[i]);
     strcat(s_buffer, "-");
     strcat(s_buffer, s_lines[i]);
@@ -45,15 +46,19 @@ static void Render() {
   } while (x<s_count && i != s_first);
   int l ;
   l = strlen(s_buffer);
+  LOGF_DEBUG("----- Final text\n%s", s_buffer);
   if(l > 0) s_buffer[l - 1] = '\0';
   text_layer_set_text(s_debug_out, s_buffer);
 }
 
 static void AddLine(char *prefix, char *body) {
-  if(s_count < MAXLINES) s_count++;
   int i = Next(s_last);
-  if(i == s_first)
+  if(s_count < MAXLINES) 
+    s_count++;
+  else
     s_first = Next(s_first);
+  //if(s_count > 0 && i == s_first)
+  //  s_first = Next(s_first);
   strcpy(s_prefixes[i], prefix);
   strcpy(s_lines[i], body);
   //FORMAT_STRING(s_lines[i], "%s-%d", body, i);
@@ -83,9 +88,10 @@ void debugout_append_line(char *message) {
 
 void debug_log_err(char *message, char *reason) {
   //s_REQ_IN_PROCESS = false;
-  char err_line[100];
-  FORMAT_STRING(err_line, "%s\n%s", message, reason);
-  debugout_append_line(err_line);
+  //char err_line[100];
+  //FORMAT_STRING(err_line, "%s\n%s", message, reason);
+  debugout_log(message);
+  debugout_append_line(reason);
 }
 
 
@@ -101,7 +107,7 @@ void log_requested() {
   //if(s_last_log_was_resp)
     //delete_last_line();
   
-  debugout_append_line("Req.");
+  debugout_log("Req.");
   //s_REQ_IN_PROCESS = true;
 }
 void log_received(char *received) {
@@ -287,8 +293,8 @@ void debugout_create(void) {
   s_font_colour = GColorBlack;
   text_layer_set_background_color(s_debug_out, GColorWhite);
   //toggle_display();
-  //debugout_visible(false);
-  debugout_append_line("Initialised");
+  debugout_visible(false);
+  debugout_log("Initialised");
   
   //accel_tap_service_subscribe(tap_handler);
   s_initialised = true;

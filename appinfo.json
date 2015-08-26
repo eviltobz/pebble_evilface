@@ -19,9 +19,9 @@
                 "type": "font"
             },
             {
-                "file": "images/wind_t.PNG",
-                "name": "WIND_DIRECTION_ICONS",
-                "type": "png"
+                "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                "name": "FONT_85",
+                "type": "font"
             },
             {
                 "file": "fonts/DIN 1451 Std Engschrift.ttf",
@@ -34,19 +34,6 @@
                 "type": "font"
             },
             {
-                "characterRegex": "[0-9]",
-                "file": "fonts/DIN 1451 Std Engschrift.ttf",
-                "name": "FONT_85",
-                "type": "font"
-            },
-            {
-                "characterRegex": "[0-9]",
-                "file": "fonts/DIN 1451 Std Engschrift.ttf",
-                "name": "FONT_28",
-                "type": "font"
-            },
-            {
-                "compatibility": "2.7",
                 "file": "fonts/DIN 1451 Std Engschrift.ttf",
                 "name": "FONT_17",
                 "type": "font"
@@ -55,6 +42,11 @@
                 "file": "fonts/DIN 1451 Std Engschrift.ttf",
                 "name": "FONT_20",
                 "type": "font"
+            },
+            {
+                "file": "images/wind_t.PNG",
+                "name": "WIND_DIRECTION_ICONS",
+                "type": "png"
             }
         ]
     },
