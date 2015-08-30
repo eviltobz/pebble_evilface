@@ -34,10 +34,10 @@ static void Render() {
   s_buffer[0] = '\0';
   int i = s_first;
   int x = 0;
-  LOGF_DEBUG("RENDER - i=%d, x=%d", i, x);
+  //LOGF_DEBUG("RENDER - i=%d, x=%d", i, x);
   do {
     x++;
-    LOGF_DEBUG("---- %d prefix=%s, line=%s", x, s_prefixes[i], s_lines[i]);
+    //LOGF_DEBUG("---- %d prefix=%s, line=%s", x, s_prefixes[i], s_lines[i]);
     strcat(s_buffer, s_prefixes[i]);
     strcat(s_buffer, "-");
     strcat(s_buffer, s_lines[i]);
@@ -46,7 +46,7 @@ static void Render() {
   } while (x<s_count && i != s_first);
   int l ;
   l = strlen(s_buffer);
-  LOGF_DEBUG("----- Final text\n%s", s_buffer);
+  //LOGF_DEBUG("----- Final text\n%s", s_buffer);
   if(l > 0) s_buffer[l - 1] = '\0';
   text_layer_set_text(s_debug_out, s_buffer);
 }

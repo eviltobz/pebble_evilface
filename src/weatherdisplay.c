@@ -34,6 +34,23 @@ void HACK_draw_next_weather(void) {
   HACK_weatherlayer_drawnext(s_bottom_weather);
 }
 
+void register_connection() {
+  // Register callbacks
+  app_message_register_inbox_received(inbox_received_callback);
+  app_message_register_inbox_dropped(inbox_dropped_callback);
+  app_message_register_outbox_failed(outbox_failed_callback);
+  app_message_register_outbox_sent(outbox_sent_callback); 
+  
+  // Open AppMessage
+  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+}
+
+void reregister_connection() {
+  debugout_log("Re-registering Connections");
+  app_message_deregister_callbacks();
+}
+
+
 void flag_request_ended(void) {
   s_attempt_number = 0;
 }
@@ -136,10 +153,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
   debugout_logerrcode("IN:", reason);
+  reregister_connection();
 }
 
 static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
   debugout_logerrcode("OUT:", reason);
+  reregister_connection();
 }
 
 static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
@@ -158,14 +177,7 @@ void weatherdisplay_create(Window *window) {
   s_separator = build_bitmaplayer(GRect(2, 77, 70, 1), GColorWhite);
   s_bottom_weather = weatherlayer_create(window, 79);
   
-  // Register callbacks
-  app_message_register_inbox_received(inbox_received_callback);
-  app_message_register_inbox_dropped(inbox_dropped_callback);
-  app_message_register_outbox_failed(outbox_failed_callback);
-  app_message_register_outbox_sent(outbox_sent_callback); 
-  
-  // Open AppMessage
-  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+  register_connection();
 }
 
 void weatherdisplay_delete(void) {
