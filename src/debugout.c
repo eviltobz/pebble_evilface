@@ -57,8 +57,10 @@ static void RollUpPrevious(void) {
 
   char *last[4];
   int l = s_last;
+  LOGF_DEBUG("Start rollup count:%d, l:%d", s_count, l);
   for(int i = 0; i < 4; i++) {
     last[i] = s_lines[l];
+    LOGF_DEBUG("%d:%d - %s", i, l, last[i]);
     l = Previous(l);
   }
   if(strcmp(last[0], last[1]) &&
@@ -66,15 +68,18 @@ static void RollUpPrevious(void) {
 
     int previous = Previous(s_last);
 
+    LOG_DEBUG("First checks passed");
+
     if(strcmp(last[0], last[2])) {
+      LOG_DEBUG("Doing ...");
       strcpy(s_lines[previous], "...");
       strcpy(s_prefixes[previous], "");
-    }
-
-    if(strcmp(last[2], "...")) {
+    } else if(strcmp(last[2], "...")) {
+      LOG_DEBUG("Doing vanilla replace");
       strcpy(s_lines[previous], s_lines[s_last]);
       strcpy(s_prefixes[previous], s_prefixes[s_last]);
       s_last = previous;
+      s_count--;
     }
   }
 
@@ -322,19 +327,15 @@ void debugout_create(void) {
   s_debug_out = build_textlayer(GRect(2,2, 140, 164), s_simple_font, GColorBlack, GTextAlignmentLeft);
   s_font_colour = GColorBlack;
   text_layer_set_background_color(s_debug_out, GColorWhite);
-  //toggle_display();
-  debugout_visible(false);
+
+  //debugout_visible(false);
   debugout_log("Initialised");
   
-  //accel_tap_service_subscribe(tap_handler);
   s_initialised = true;
-  //update_display_text();
 }
 void debugout_delete(void) {
   s_initialised = false;
   
-  //accel_tap_service_unsubscribe();
   fonts_unload_custom_font(s_simple_font);
-  
   text_layer_destroy(s_debug_out);
 }

@@ -66,6 +66,12 @@ static void SECONDHACK_tick_handler(struct tm *tick_time, TimeUnits units_change
   static int count = 1;
   FORMAT_STRING(line, "%d - Hacky log info to test", count++);
   debugout_log(line);
+
+  static int meh = 0;
+  meh++;
+  if(meh == 8) {
+    debugout_log("one, two, miss a few");
+  }
 }
 
 
@@ -77,7 +83,7 @@ void eventhandler_subscribe() {
   bluetooth_connection_service_subscribe(statusdisplay_update_connection);
   
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
-//  tick_timer_service_subscribe(SECOND_UNIT, SECONDHACK_tick_handler);
+  tick_timer_service_subscribe(SECOND_UNIT, SECONDHACK_tick_handler);
   
   
   // Not currently dealing with events raised from communication with phone. 
