@@ -5,6 +5,9 @@
 #include "weatherlayer.h"
 #include "debugout.h"
 
+static void register_connection(void);
+static void reregister_connection(void);
+
 enum {
   KEY_WEATHER_MORNING = 1,
   KEY_WEATHER_EVENING = 2,
@@ -33,23 +36,6 @@ void HACK_draw_next_weather(void) {
   LOG_DEBUG("CALLING HACK DRAW WEATHER!!!!");
   HACK_weatherlayer_drawnext(s_bottom_weather);
 }
-
-void register_connection() {
-  // Register callbacks
-  app_message_register_inbox_received(inbox_received_callback);
-  app_message_register_inbox_dropped(inbox_dropped_callback);
-  app_message_register_outbox_failed(outbox_failed_callback);
-  app_message_register_outbox_sent(outbox_sent_callback); 
-  
-  // Open AppMessage
-  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
-}
-
-void reregister_connection() {
-  debugout_log("Re-registering Connections");
-  app_message_deregister_callbacks();
-}
-
 
 void flag_request_ended(void) {
   s_attempt_number = 0;
@@ -185,4 +171,21 @@ void weatherdisplay_delete(void) {
   weatherlayer_delete(s_top_weather);
   weatherlayer_delete(s_bottom_weather);
   fonts_unload_custom_font(s_simple_font);
+}
+
+
+void register_connection() {
+  // Register callbacks
+  app_message_register_inbox_received(inbox_received_callback);
+  app_message_register_inbox_dropped(inbox_dropped_callback);
+  app_message_register_outbox_failed(outbox_failed_callback);
+  app_message_register_outbox_sent(outbox_sent_callback); 
+  
+  // Open AppMessage
+  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+}
+
+void reregister_connection() {
+  debugout_log("Re-registering Connections");
+  app_message_deregister_callbacks();
 }
