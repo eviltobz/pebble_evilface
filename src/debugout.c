@@ -51,7 +51,37 @@ static void Render() {
   text_layer_set_text(s_debug_out, s_buffer);
 }
 
+static void RollUpPrevious(void) {
+  if(s_count < 4)
+    return;
+
+  char *last[4];
+  int l = s_last;
+  for(int i = 0; i < 4; i++) {
+    last[i] = s_lines[l];
+    l = Previous(l);
+  }
+  if(strcmp(last[0], last[1]) &&
+     (strcmp(last[0], last[2]) || strcmp(last[0], last[3])) ) {
+
+    int previous = Previous(s_last);
+
+    if(strcmp(last[0], last[2])) {
+      strcpy(s_lines[previous], "...");
+      strcpy(s_prefixes[previous], "");
+    }
+
+    if(strcmp(last[2], "...")) {
+      strcpy(s_lines[previous], s_lines[s_last]);
+      strcpy(s_prefixes[previous], s_prefixes[s_last]);
+      s_last = previous;
+    }
+  }
+
+}
+
 static void AddLine(char *prefix, char *body) {
+  RollUpPrevious();
   int i = Next(s_last);
   if(s_count < MAXLINES) 
     s_count++;
