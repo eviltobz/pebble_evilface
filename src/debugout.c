@@ -60,7 +60,7 @@ static void RollUpPrevious(void) {
   LOGF_DEBUG("Start rollup count:%d, l:%d", s_count, l);
   for(int i = 0; i < 4; i++) {
     last[i] = s_lines[l];
-    LOGF_DEBUG("%d:%d - %s", i, l, last[i]);
+    //LOGF_DEBUG("%d:%d - %s", i, l, last[i]);
     l = Previous(l);
   }
   if(strcmp(last[0], last[1]) &&
@@ -68,15 +68,15 @@ static void RollUpPrevious(void) {
 
     int previous = Previous(s_last);
 
-    LOG_DEBUG("First checks passed");
+    //LOG_DEBUG("First checks passed");
 
     if(strcmp(last[0], last[2])) {
-      LOG_DEBUG("Doing ...");
+      LOGF_DEBUG("Doing ... %s", last[0]);
       strcpy(s_lines[previous], "...");
       strcpy(s_prefixes[previous], "");
     } else if(strcmp(last[2], "...")) {
-      LOG_DEBUG("Doing vanilla replace");
-      strcpy(s_lines[previous], s_lines[s_last]);
+      LOGF_DEBUG("Doing replace %s", last[0]);
+      strcpy(s_lines[previous],    s_lines[s_last]);
       strcpy(s_prefixes[previous], s_prefixes[s_last]);
       s_last = previous;
       s_count--;
@@ -86,7 +86,7 @@ static void RollUpPrevious(void) {
 }
 
 static void AddLine(char *prefix, char *body) {
-  RollUpPrevious();
+  //RollUpPrevious();
   int i = Next(s_last);
   if(s_count < MAXLINES) 
     s_count++;
@@ -328,7 +328,7 @@ void debugout_create(void) {
   s_font_colour = GColorBlack;
   text_layer_set_background_color(s_debug_out, GColorWhite);
 
-  //debugout_visible(false);
+  debugout_visible(false);
   debugout_log("Initialised");
   
   s_initialised = true;

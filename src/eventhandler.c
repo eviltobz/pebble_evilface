@@ -62,6 +62,11 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 static void SECONDHACK_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   tick_handler(tick_time, units_changed);
   //HACK_draw_next_weather();
+  static int guard = 0;
+  guard++;
+  if(guard<2) return;
+  guard = 0;
+
   char line[50];
   static int count = 1;
   FORMAT_STRING(line, "%d - Hacky log info to test", count++);
@@ -71,6 +76,7 @@ static void SECONDHACK_tick_handler(struct tm *tick_time, TimeUnits units_change
   meh++;
   if(meh == 8) {
     debugout_log("one, two, miss a few");
+    meh = 0;
   }
 }
 
@@ -83,7 +89,7 @@ void eventhandler_subscribe() {
   bluetooth_connection_service_subscribe(statusdisplay_update_connection);
   
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
-  tick_timer_service_subscribe(SECOND_UNIT, SECONDHACK_tick_handler);
+  //tick_timer_service_subscribe(SECOND_UNIT, SECONDHACK_tick_handler);
   
   
   // Not currently dealing with events raised from communication with phone. 
