@@ -188,4 +188,5 @@ void register_connection() {
 void reregister_connection() {
   debugout_log("Re-registering Connections");
   app_message_deregister_callbacks();
+  register_connection();
 }

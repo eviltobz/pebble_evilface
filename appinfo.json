@@ -19,34 +19,14 @@
                 "type": "font"
             },
             {
-                "file": "fonts/DIN 1451 Std Engschrift.ttf",
-                "name": "FONT_85",
-                "type": "font"
-            },
-            {
-                "file": "fonts/DIN 1451 Std Engschrift.ttf",
-                "name": "FONT_40",
-                "type": "font"
-            },
-            {
-                "file": "fonts/DIN 1451 Std Engschrift.ttf",
-                "name": "FONT_10",
-                "type": "font"
-            },
-            {
-                "file": "fonts/DIN 1451 Std Engschrift.ttf",
-                "name": "FONT_17",
-                "type": "font"
+                "file": "images/wind_t.PNG",
+                "name": "WIND_DIRECTION_ICONS",
+                "type": "png"
             },
             {
                 "file": "fonts/DIN 1451 Std Engschrift.ttf",
                 "name": "FONT_20",
                 "type": "font"
-            },
-            {
-                "file": "images/wind_t.PNG",
-                "name": "WIND_DIRECTION_ICONS",
-                "type": "png"
             }
         ]
     },
