@@ -64,13 +64,16 @@ static void SECONDHACK_tick_handler(struct tm *tick_time, TimeUnits units_change
   //HACK_draw_next_weather();
   static int guard = 0;
   guard++;
-  if(guard<2) return;
+  if(guard<3){
+    HAXXrender();
+    return;
+  }
   guard = 0;
 
   char line[50];
   static int count = 1;
   FORMAT_STRING(line, "%d - Hacky log info to test", count++);
-  debugout_log(line);
+  debugout_log("repetative log...");
 
   static int meh = 0;
   meh++;

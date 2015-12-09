@@ -50,6 +50,7 @@ static void Render() {
   if(l > 0) s_buffer[l - 1] = '\0';
   text_layer_set_text(s_debug_out, s_buffer);
 }
+void HAXXrender() {Render();}
 
 static void RollUpPrevious(void) {
   if(s_count < 4)
@@ -57,27 +58,25 @@ static void RollUpPrevious(void) {
 
   char *last[4];
   int l = s_last;
-  LOGF_DEBUG("Start rollup count:%d, l:%d", s_count, l);
   for(int i = 0; i < 4; i++) {
     last[i] = s_lines[l];
-    //LOGF_DEBUG("%d:%d - %s", i, l, last[i]);
     l = Previous(l);
   }
-  if(strcmp(last[0], last[1]) &&
-     (strcmp(last[0], last[2]) || strcmp(last[0], last[3])) ) {
+  if(strcmp(last[0], last[1]) == 0 &&
+     (strcmp(last[0], last[2]) == 0 || strcmp(last[0], last[3]) == 0) ) {
 
     int previous = Previous(s_last);
 
-    //LOG_DEBUG("First checks passed");
 
-    if(strcmp(last[0], last[2])) {
+    if(strcmp(last[0], last[2]) == 0) {
       LOGF_DEBUG("Doing ... %s", last[0]);
       strcpy(s_lines[previous], "...");
       strcpy(s_prefixes[previous], "");
-    } else if(strcmp(last[2], "...")) {
+    } else if(strcmp(last[2], "...") == 0) {
       LOGF_DEBUG("Doing replace %s", last[0]);
-      strcpy(s_lines[previous],    s_lines[s_last]);
-      strcpy(s_prefixes[previous], s_prefixes[s_last]);
+      //strcpy(s_lines[previous],    s_lines[s_last]); No point copying something that is the same :)
+      //strcpy(s_prefixes[previous], s_prefixes[s_last]);
+      strcpy(s_prefixes[previous], "X");
       s_last = previous;
       s_count--;
     }
@@ -103,15 +102,18 @@ static void AddLine(char *prefix, char *body) {
 }
 
 void debugout_log(char *message) {
+  return;
   AddLine(timestamp_minutes(), message);
 }
 
 void debugout_append(char *message) {
+  return;
   strcat(s_lines[s_last], message);
   Render();
 }
 
 void debugout_append_line(char *message) {
+  return;
   AddLine("", message);
 }
 
@@ -122,6 +124,7 @@ void debugout_append_line(char *message) {
 
 
 void debug_log_err(char *message, char *reason) {
+  return;
   //s_REQ_IN_PROCESS = false;
   //char err_line[100];
   //FORMAT_STRING(err_line, "%s\n%s", message, reason);
@@ -131,14 +134,17 @@ void debug_log_err(char *message, char *reason) {
 
 
 void debugout_logerr(char *message, char *reason) {
+  return;
   debug_log_err(message, reason);
 }
 void debugout_logerrcode(char *message, AppMessageResult reason) {
+  return;
   debug_log_err(message, translate_error(reason));
 }
 
 
 void log_requested() {
+  return;
   //if(s_last_log_was_resp)
     //delete_last_line();
   
@@ -146,6 +152,7 @@ void log_requested() {
   //s_REQ_IN_PROCESS = true;
 }
 void log_received(char *received) {
+  return;
   debugout_append(received);
   
   // don't want to be binning last line if some error has also slipped in.
@@ -185,143 +192,15 @@ int count_characters(const char *str, char character)
 
     return count;
 }
-
-
-static bool s_REQ_IN_PROCESS = false;
-static void scroll_debug_buffer(void) {
-  static char temp_buffer[sizeof(s_debug_buffer)];
-  if(count_characters(s_debug_buffer, '\n') > 12) {
-    //LOG_DEBUG("scroll_debug_buffer - scrolling");
-    int second_line_index = find_index_of(s_debug_buffer, '\n');
-    strcpy(temp_buffer, (s_debug_buffer + second_line_index));
-    strcpy(s_debug_buffer, temp_buffer);
-  }
-  //else
-    //LOG_DEBUG("scroll_debug_buffer - no work to do :)");
-  
-  if(strlen(s_debug_buffer) > (sizeof(s_debug_buffer)-30)) {
-    //LOGF_DEBUG("Debug overflowing - %d chars", strlen(s_debug_buffer));
-    strcpy(s_debug_buffer, "");
-  }
-}
-static void delete_last_line(void) {
-  //LOGF_DEBUG("find last index of in %d chars", strlen(s_debug_buffer));
-  u_int p = strlen(s_debug_buffer);
-  while(s_debug_buffer[p] != '\n' && p > 0)
-    p--;
-  
-  //LOGF_DEBUG("find last index of was %d - setting to null terminator", p);
-  
-  s_debug_buffer[p] = 0;
-}
-static void update_display_text(void) {
-  if(!s_initialised)
-    return;
-  
-  text_layer_set_text_color(s_debug_out, s_font_colour);
-  text_layer_set_text(s_debug_out, s_debug_buffer);
-}
-static void debug_append_internal(char *message) {
-  strcat(s_debug_buffer, message);
-  update_display_text();
-  
-  s_last_log_was_resp = false;
-}
-
-void debug_append_line(char *message){
-  scroll_debug_buffer();
-  
-  char line[100];
-  char newline[2];
-  if(strlen(s_debug_buffer) > 0)
-    strcpy(newline, "\n");
-  else 
-    strcpy(newline, "");
-  
-  FORMAT_STRING(line, "%s%s-%s", newline, timestamp_minutes(), message);
-  if(s_REQ_IN_PROCESS){
-    //FORMAT_STRING(line, "%s!!%s-%s", newline, timestamp_minutes(), message);
-    s_font_colour = GColorRed;
-  }
-  else {
-    //FORMAT_STRING(line, "%s%s-%s", newline, timestamp_minutes(), message);
-    s_font_colour = GColorBlack;
-  }
-  
-  // have buffers for the last few messages, not counting timestamps
-  // if they're the same, show first, ..., last
-  // keep moving last as it posts - stop having the same message loooooadsa times
-  // moving to an explicit multiline buffer should help with this a bit anyways.
-  
-  debug_append_internal(line);
-};
-void debug_append(char *message) {
-  if(strlen(s_debug_buffer) == 0)
-    debug_append_line(message);
-  else
-    debug_append_internal(message);
-}
-void debug_log_err(char *message, char *reason) {
-  s_REQ_IN_PROCESS = false;
-  char err_line[100];
-  FORMAT_STRING(err_line, "%s\n%s", message, reason);
-  debug_append_line(err_line);
-}
-void log_requested() {
-  if(s_last_log_was_resp)
-    delete_last_line();
-  
-  debug_append_line("Req.");
-  s_REQ_IN_PROCESS = true;
-}
-void log_received(char *received) {
-  debug_append(received);
-  
-  // don't want to be binning last line if some error has also slipped in.
-  if(s_REQ_IN_PROCESS)
-   s_last_log_was_resp = true;
-  
-  s_REQ_IN_PROCESS = false;
-  
-  // do something to reset the colour - red should now be black
-}
-
-
-
-// GOOD INTERFACE...
-void debugout_logerr(char *message, char *reason) {
-  debug_log_err(message, reason);
-}
-void debugout_logerrcode(char *message, AppMessageResult reason) {
-  debug_log_err(message, translate_error(reason));
-}
-void debugout_logline(char *message) {
-  debug_append_line(message);
-}
-void debugout_append(char *message) {
-  debug_append(message);
-}
 */
 
 void debugout_visible(bool visible) {
+  return;
   layer_set_hidden((Layer*)s_debug_out, !visible);
 }
 
-/*
-static void toggle_display(void) {
-  static bool visible = true;
-  //layer_set_hidden((Layer*)s_debug_out, visible);
-  debugout_visible(visible);
-  visible = !visible;
-}
-
-static void tap_handler(AccelAxisType axis, int32_t direction) {
-  toggle_display();
-}
-*/
-
-
 void debugout_create(void) {
+  return;
   //s_simple_font = fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD);
   s_simple_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_10));
   s_debug_out = build_textlayer(GRect(2,2, 140, 164), s_simple_font, GColorBlack, GTextAlignmentLeft);
@@ -334,6 +213,7 @@ void debugout_create(void) {
   s_initialised = true;
 }
 void debugout_delete(void) {
+  return;
   s_initialised = false;
   
   fonts_unload_custom_font(s_simple_font);

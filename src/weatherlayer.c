@@ -124,6 +124,10 @@ void weatherlayer_update(WeatherLayer *layer, WeatherData *weather) {
   text_layer_set_text(layer->windgust, weather->wind_gust);
   text_layer_set_text(layer->hour, weather->timestamp_hour);
   text_layer_set_text(layer->period, weather->timestamp_period);
+
+  debugout_append(weather->timestamp_hour);
+  debugout_append(weather->timestamp_period);
+  debugout_append(",");
   
   FORMAT_STRING(layer->TEMP_AND_RAIN_BUFFER, "%s° %s", weather->feels_like, weather->precipitation_prob);
   text_layer_set_text(layer->temp_and_rain, layer->TEMP_AND_RAIN_BUFFER);

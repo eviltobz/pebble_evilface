@@ -112,12 +112,17 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
   }
   char log[4] = "";
   if(s_current_weather_data.is_valid) {
-    snprintf(s_weather_timestamp_buffer, sizeof(s_weather_timestamp_buffer), "%s%s @ %s", s_current_weather_data.timestamp_hour, s_current_weather_data.timestamp_period, timestamp_minutes());
+    /*snprintf(s_weather_timestamp_buffer, sizeof(s_weather_timestamp_buffer),
+             "%s%s @ %s", s_current_weather_data.timestamp_hour, s_current_weather_data.timestamp_period, timestamp_minutes());
+             */
+
+    snprintf(s_weather_timestamp_buffer, sizeof(s_weather_timestamp_buffer),
+             "%s", timestamp_minutes());
     text_layer_set_text(s_weather_timestamp, s_weather_timestamp_buffer);
     weatherlayer_update(s_top_weather, &s_current_weather_data);
     strcat(log, "C");
   } else {
-    strcat(log, "c");
+    strcat(log, "c!!!");
   }
   
   if(s_morning_weather_data.is_valid){

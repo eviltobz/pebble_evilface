@@ -20,3 +20,5 @@ void debugout_visible(bool visible);
 
 void debugout_create(void);
 void debugout_delete(void);
+
+void HAXXrender(void);
