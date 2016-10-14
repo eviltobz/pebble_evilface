@@ -63,7 +63,8 @@ static void SECONDHACK_tick_handler(struct tm *tick_time, TimeUnits units_change
 
 
 void timedisplay_create(Window *window){
-  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_85));
+  //s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_85));
+  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_76));
   s_date_font = fonts_get_system_font(FONT_KEY_GOTHIC_14);
   
   s_date_background = build_bitmaplayer(GRect(85, 133, 56, 18), GColorWhite);

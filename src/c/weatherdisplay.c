@@ -20,7 +20,7 @@ static WeatherLayer *s_top_weather;
 static BitmapLayer *s_separator;
 static WeatherLayer *s_bottom_weather;
 
-static GFont *s_simple_font;
+static GFont s_simple_font;
 static TextLayer *s_weather_timestamp;
 
 static char s_weather_timestamp_buffer[50];
@@ -161,7 +161,7 @@ void create_simple_text(TextLayer **layer, int x, int y){
 }
 
 void weatherdisplay_create(Window *window) {
-  s_simple_font  = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_10));
+  s_simple_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_10));
   create_simple_text(&s_weather_timestamp, 10, 154);
   
   s_top_weather = weatherlayer_create(window, 0);

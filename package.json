@@ -1,0 +1,71 @@
+{
+    "author": "veryveryevilco",
+    "dependencies": {},
+    "keywords": [],
+    "name": "evilface",
+    "pebble": {
+        "displayName": "evilface",
+        "enableMultiJS": false,
+        "messageKeys": {
+            "KEY_WEATHER_CURRENT": 3,
+            "KEY_WEATHER_ERROR": 99,
+            "KEY_WEATHER_EVENING": 2,
+            "KEY_WEATHER_MORNING": 1
+        },
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/wind_t.PNG",
+                    "name": "WIND_DIRECTION_ICONS",
+                    "type": "png"
+                },
+                {
+                    "file": "fonts/meteocons.ttf",
+                    "name": "WEATHER_FONT_23",
+                    "type": "font"
+                },
+                {
+                    "characterRegex": "[0-9]",
+                    "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                    "name": "FONT_76",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                    "name": "FONT_20",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                    "name": "FONT_40",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                    "name": "FONT_10",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/DIN 1451 Std Engschrift.ttf",
+                    "name": "FONT_17",
+                    "targetPlatforms": null,
+                    "type": "font"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "basalt"
+        ],
+        "uuid": "393549bb-9a11-466c-a521-5688bafeb9e5",
+        "watchapp": {
+            "watchface": true
+        }
+    },
+    "version": "0.1.0"
+}

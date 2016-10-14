@@ -8,13 +8,13 @@ Window *s_window;
   
 // common across all calls
 static int s_reference_count = 0;
-static GFont *s_main_font;
-static GFont *s_location_font;
-static GFont *s_timestamp_font;
-static GFont *s_small_font;
+static GFont s_main_font;
+static GFont s_location_font;
+static GFont s_timestamp_font;
+static GFont s_small_font;
 
 //static GBitmap *s_windicons;
-static GFont *s_weather_icon_font;
+static GFont s_weather_icon_font;
 
 // specific to an instance !! THIS COULD BE A POTENTIAL BUG !!
 static bool initialising = true;
