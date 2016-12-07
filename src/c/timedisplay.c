@@ -70,8 +70,14 @@ void timedisplay_create(Window *window){
   s_date_background = build_bitmaplayer(GRect(85, 133, 56, 18), GColorWhite);
   s_date  = build_textlayer(GRect(82,132,62,21), s_date_font, GColorBlack, GTextAlignmentCenter);
   
-  s_hours = build_default_textlayer(GRect(74, -22, 74, 93), s_time_font);
-  s_mins  = build_default_textlayer(GRect(74, 43, 74, 93), s_time_font);
+  //s_hours = build_default_textlayer(GRect(74, -22, 74, 93), s_time_font);
+  s_hours = build_default_textlayer(GRect(82, -19, 64, 78), s_time_font);
+  //s_mins  = build_default_textlayer(GRect(74, 43, 74, 93), s_time_font);
+  s_mins  = build_default_textlayer(GRect(82, 40, 64, 78), s_time_font);
+  
+  //text_layer_set_background_color(s_hours, GColorGreen);
+  //text_layer_set_background_color(s_mins, GColorRed);
+  
   
   timedisplay_update(get_current_time());
   //tick_handler(get_current_time(), MINUTE_UNIT);

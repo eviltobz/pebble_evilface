@@ -165,7 +165,7 @@ void weatherdisplay_create(Window *window) {
   create_simple_text(&s_weather_timestamp, 10, 154);
   
   s_top_weather = weatherlayer_create(window, 0);
-  s_separator = build_bitmaplayer(GRect(2, 77, 70, 1), GColorWhite);
+  s_separator = build_bitmaplayer(GRect(2 + 3, 77, 70, 1), GColorWhite);
   s_bottom_weather = weatherlayer_create(window, 79);
   
   register_connection();

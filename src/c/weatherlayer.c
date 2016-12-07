@@ -9,7 +9,7 @@ Window *s_window;
 // common across all calls
 static int s_reference_count = 0;
 static GFont s_main_font;
-static GFont s_location_font;
+// static GFont s_location_font;
 static GFont s_timestamp_font;
 static GFont s_small_font;
 
@@ -110,14 +110,14 @@ void weatherlayer_clear(WeatherLayer *layer) {
   
   text_layer_set_text(layer->summary_icon, "");
   
-  text_layer_set_text(layer->location, "");
+  // text_layer_set_text(layer->location, "");
 }
 
 void weatherlayer_update(WeatherLayer *layer, WeatherData *weather) {
   // temporarily not showing this...
   //FORMAT_STRING(layer->HACK_BUFFER, "%s %s", weather->timestamp_hour, weather->timestamp_period);
   //text_layer_set_text(layer->location, layer->HACK_BUFFER);
-  text_layer_set_text(layer->location, weather->location_buffer);
+  // text_layer_set_text(layer->location, weather->location_buffer);
   
   draw_wind(layer, weather->wind_direction_pointer);
   text_layer_set_text(layer->windspeed, weather->wind_speed); 
@@ -166,22 +166,23 @@ void create_weather_info(WeatherLayer **layer, int x, int y) {
 
 WeatherLayer* weatherlayer_create(Window *window, int y_offset) {
   s_window = window;
+  int x_offset = 3;
   
   if(s_reference_count == 0) {
     s_main_font      = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_20));
     s_timestamp_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_17));
     s_small_font     = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_10));
-    s_location_font  = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_40));
+    // s_location_font  = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_40));
     s_weather_icon_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_WEATHER_FONT_23));
   }
   
   WeatherLayer *layer = (WeatherLayer *) malloc(sizeof(WeatherLayer));
   layer->windicons = gbitmap_create_with_resource(RESOURCE_ID_WIND_DIRECTION_ICONS);
   //layer->location = build_textlayer(GRect(1, -5 + y_offset, 80, 70), s_location_font, GColorBlueMoon, GTextAlignmentLeft);
-  layer->location = build_textlayer(GRect(1, 10 + y_offset, 80, 70), s_location_font, GColorBlueMoon, GTextAlignmentLeft);
+  // layer->location = build_textlayer(GRect(1, 10 + y_offset, 80, 70), s_location_font, GColorBlueMoon, GTextAlignmentLeft);
     
-  create_wind_info(&layer, 0, 0 + y_offset);
-  create_weather_info(&layer, 0, 40 + y_offset);
+  create_wind_info(&layer, 0 + x_offset, 0 + y_offset);
+  create_weather_info(&layer, 0 + x_offset, 40 + y_offset);
   
   
   initialising = false;
@@ -200,7 +201,7 @@ void weatherlayer_delete(WeatherLayer *layer) {
   text_layer_destroy(layer->summary_icon);
   text_layer_destroy(layer->temp_and_rain);
   text_layer_destroy(layer->summary);
-  text_layer_destroy(layer->location);
+  // text_layer_destroy(layer->location);
   
   gbitmap_destroy(layer->windicons);
   
@@ -209,7 +210,7 @@ void weatherlayer_delete(WeatherLayer *layer) {
   
   if(s_reference_count == 0) {
     fonts_unload_custom_font(s_main_font);
-    fonts_unload_custom_font(s_location_font);
+    // fonts_unload_custom_font(s_location_font);
     fonts_unload_custom_font(s_timestamp_font);
     fonts_unload_custom_font(s_small_font);
     fonts_unload_custom_font(s_weather_icon_font);

@@ -11,7 +11,7 @@ typedef struct weather_layer
   char SUMMARY_BUFFER[50];
   char HACK_BUFFER[50];
   // public bits
-  TextLayer *location;
+  // TextLayer *location;
   
   TextLayer *hour;
   TextLayer *period;
