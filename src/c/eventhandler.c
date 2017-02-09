@@ -84,12 +84,20 @@ static void SECONDHACK_tick_handler(struct tm *tick_time, TimeUnits units_change
 }
 
 
+void bluetooth_status_update(bool connected)
+{
+  statusdisplay_update_connection(connected);
+  if(connected) {
+    weatherdisplay_reconnect();
+  }
+}
 
 void eventhandler_subscribe() {
   accel_tap_service_subscribe(tap_handler);
   
   battery_state_service_subscribe(statusdisplay_update_battery);
-  bluetooth_connection_service_subscribe(statusdisplay_update_connection);
+  //bluetooth_connection_service_subscribe(statusdisplay_update_connection);
+  bluetooth_connection_service_subscribe(bluetooth_status_update);
   
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
   //tick_timer_service_subscribe(SECOND_UNIT, SECONDHACK_tick_handler);

@@ -30,6 +30,7 @@ static WeatherData s_morning_weather_data;
 static WeatherData s_evening_weather_data;
 
 static int s_attempt_number = 0;
+static bool s_first_run = true; // app requesting weather before JS has initialised, then crashing.
 
 
 void HACK_draw_next_weather(void) {
@@ -46,7 +47,7 @@ static bool update_due(struct tm *tick_time) {
   static const int RETRY_LIMIT = 3;
   
   if(tick_time->tm_min % REFRESH_DURATION == 0) {
-    s_attempt_number  = 1;
+    s_attempt_number  = 1; // shouldn't this be 0?!?!?!
     return true;
   }
   
@@ -62,10 +63,7 @@ static bool update_due(struct tm *tick_time) {
   return false;
 }
 
-void weatherdisplay_update(struct tm *tick_time) {
-  
-  static bool first_run = true; // app requesting weather before JS has initialised, then crashing.
-  if(update_due(tick_time) && !first_run) {
+void do_update() {
     // Begin dictionary
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
@@ -76,9 +74,18 @@ void weatherdisplay_update(struct tm *tick_time) {
     // Send the message!
     app_message_outbox_send();
     log_requested();
-  }
+}
+
+void weatherdisplay_update(struct tm *tick_time) {
+  if(update_due(tick_time) && !s_first_run)
+    do_update();
   else
-    first_run = false;
+    s_first_run = false;
+}
+
+void weatherdisplay_reconnect() {
+  if(!s_first_run && s_attempt_number > 1)
+    do_update();
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {

@@ -11,8 +11,8 @@ static GColor s_empty_colour;
 
 void statusdisplay_update_battery(BatteryChargeState state) {
   if(state.is_charging) {
-    s_charged_colour = GColorYellow;
-    s_empty_colour = GColorIndigo;
+    s_charged_colour = GColorWhite;
+    s_empty_colour = GColorBlack;
   }
   else {
     s_charged_colour = GColorIslamicGreen;
