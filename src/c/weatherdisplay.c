@@ -84,7 +84,7 @@ void weatherdisplay_update(struct tm *tick_time) {
 }
 
 void weatherdisplay_reconnect() {
-  if(!s_first_run && s_attempt_number > 1)
+   if(!s_first_run) // && s_attempt_number > 1) - due to not being connected, there haven't been any attempts. bah!
     do_update();
 }
 
