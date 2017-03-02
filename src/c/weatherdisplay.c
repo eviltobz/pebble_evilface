@@ -64,6 +64,10 @@ static bool update_due(struct tm *tick_time) {
 }
 
 void do_update() {
+    snprintf(s_weather_timestamp_buffer, sizeof(s_weather_timestamp_buffer),
+             "Pending...");
+    text_layer_set_text(s_weather_timestamp, s_weather_timestamp_buffer);
+
     // Begin dictionary
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
@@ -84,6 +88,9 @@ void weatherdisplay_update(struct tm *tick_time) {
 }
 
 void weatherdisplay_reconnect() {
+    snprintf(s_weather_timestamp_buffer, sizeof(s_weather_timestamp_buffer),
+             "Reconnect...");
+    text_layer_set_text(s_weather_timestamp, s_weather_timestamp_buffer);
    if(!s_first_run) // && s_attempt_number > 1) - due to not being connected, there haven't been any attempts. bah!
     do_update();
 }
@@ -124,7 +131,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
              */
 
     snprintf(s_weather_timestamp_buffer, sizeof(s_weather_timestamp_buffer),
-             "%s", timestamp_minutes());
+             "U:%s", timestamp_minutes());
     text_layer_set_text(s_weather_timestamp, s_weather_timestamp_buffer);
     weatherlayer_update(s_top_weather, &s_current_weather_data);
     strcat(log, "C");
