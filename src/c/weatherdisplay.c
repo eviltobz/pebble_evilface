@@ -47,7 +47,7 @@ static bool update_due(struct tm *tick_time) {
   static const int RETRY_LIMIT = 3;
   
   if(tick_time->tm_min % REFRESH_DURATION == 0) {
-    s_attempt_number  = 1; // shouldn't this be 0?!?!?!
+    s_attempt_number  = 1; // set to 1 for counting attempts, not retries.
     return true;
   }
   
@@ -65,7 +65,7 @@ static bool update_due(struct tm *tick_time) {
 
 void do_update() {
     snprintf(s_weather_timestamp_buffer, sizeof(s_weather_timestamp_buffer),
-             "Pending...");
+             "Pending:%d", s_attempt_number);
     text_layer_set_text(s_weather_timestamp, s_weather_timestamp_buffer);
 
     // Begin dictionary
@@ -91,6 +91,7 @@ void weatherdisplay_reconnect() {
     snprintf(s_weather_timestamp_buffer, sizeof(s_weather_timestamp_buffer),
              "Reconnect...");
     text_layer_set_text(s_weather_timestamp, s_weather_timestamp_buffer);
+    s_attempt_number = 1;
    if(!s_first_run) // && s_attempt_number > 1) - due to not being connected, there haven't been any attempts. bah!
     do_update();
 }
